@@ -801,12 +801,12 @@ osStatus_t osThreadJoin(osThreadId_t thread_id)
 }
 
 /// Terminate execution of current running thread.
-__NO_RETURN void osThreadExit(void)  /* doing */
+__NO_RETURN void osThreadExit(void)
 {
-    rt_thread_exit();
-
+    rt_thread_t self = rt_thread_self();
+    rt_thread_control(self, RT_THREAD_CTRL_CLOSE, RT_NULL);
     RT_ASSERT(0);
-    while (1);
+    while(1);
 }
 
 /// Terminate execution of a thread.
