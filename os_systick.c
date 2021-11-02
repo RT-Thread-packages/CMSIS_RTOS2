@@ -32,7 +32,7 @@
 #define SYSTICK_IRQ_PRIORITY    0xFFU
 #endif
 
-static uint8_t PendST;
+static uint8_t PendST __attribute__((section(".bss.os")));
 
 // Setup OS Tick.
 RT_WEAK int32_t OS_Tick_Setup (uint32_t freq, IRQHandler_t handler) {
@@ -40,11 +40,13 @@ RT_WEAK int32_t OS_Tick_Setup (uint32_t freq, IRQHandler_t handler) {
   (void)handler;
 
   if (freq == 0U) {
+    //lint -e{904} "Return statement before end of function"
     return (-1);
   }
 
   load = (SystemCoreClock / freq) - 1U;
   if (load > 0x00FFFFFFU) {
+    //lint -e{904} "Return statement before end of function"
     return (-1);
   }
 
@@ -109,7 +111,7 @@ RT_WEAK uint32_t OS_Tick_GetCount (void) {
 
 // Get OS Tick overflow status.
 RT_WEAK uint32_t OS_Tick_GetOverflow (void) {
-  return ((SysTick->CTRL >> 16) & 1U);
+  return ((SCB->ICSR & SCB_ICSR_PENDSTSET_Msk) >> SCB_ICSR_PENDSTSET_Pos);
 }
 
 #endif  // SysTick
