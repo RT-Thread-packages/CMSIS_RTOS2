@@ -11,8 +11,8 @@
 
 #include <cmsis_os2.h>
 #include "cmsis_rtthread.h"
-#include "board.h"
-#include "os_tick.h"
+#include <board.h>
+#include <os_tick.h>
 #include <rthw.h>
 
 /// Kernel Information
@@ -29,8 +29,6 @@
 #define MALLOC_CB 0x10
 #define MALLOC_STACK 0x04
 #define MALLOC_MEM 0x02
-
-extern void rt_thread_exit(void);
 
 static osKernelState_t kernel_state = osKernelInactive;
 
