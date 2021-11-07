@@ -15,10 +15,8 @@
 #include <os_tick.h>
 #include <rthw.h>
 
-/// Kernel Information
-#define API_VERSION         20010002   ///< API version (2.1.2)
 ///< RT-Thread Kernel version
-#define RT_KERNEL_VERSION            (((rt_uint32_t)RT_VERSION * 10000000UL) | \
+#define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION * 10000000UL)   | \
                                    ((rt_uint32_t)RT_SUBVERSION *    10000UL) | \
                                    ((rt_uint32_t)RT_REVISION *        1UL))
 #define KERNEL_Id     "RT-Thread"  ///< Kernel identification string
@@ -134,8 +132,8 @@ osStatus_t osKernelGetInfo(osVersion_t *version, char *id_buf, uint32_t id_size)
     if ((RT_NULL == version) || (RT_NULL == id_buf) || id_size < sizeof(KERNEL_Id))
         return osErrorParameter;
 
-    version->api = API_VERSION;
-    version->kernel = RT_KERNEL_VERSION;
+    version->api = KERNEL_VERSION;
+    version->kernel = KERNEL_VERSION;
 
     id_size = sizeof(KERNEL_Id);
     rt_strncpy(id_buf, KERNEL_Id, id_size);
