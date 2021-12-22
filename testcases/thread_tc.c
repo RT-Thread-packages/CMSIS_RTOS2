@@ -1,7 +1,7 @@
 #include <cmsis_rtthread.h>
 #include "utest.h"
 
-#define THREAD_STACK_SIZE  512
+#define THREAD_STACK_SIZE  2048
 #define THREAD_TIMESLICE   10
 
 static osThreadId_t __current_thread;
