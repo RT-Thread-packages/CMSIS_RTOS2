@@ -18,6 +18,23 @@
 extern "C" {
 #endif
 
+///< RT-Thread Kernel version
+#if defined(RT_VERSION_CHECK) && (RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 0, 2))
+#define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION_MAJOR * 10000000UL)    | \
+                                   ((rt_uint32_t)RT_VERSION_MINOR  *    10000UL)    | \
+                                   ((rt_uint32_t)RT_VERSION_PATCH  *        1UL))
+#define thread_rt_list_entry(node, rt_thread)   rt_list_entry(node, struct rt_thread, tlist)
+#define THREAD_NAME(thread_cb)  thread_cb->thread.parent.name
+#define RT_WEAK                 rt_weak
+
+#else   /* legacy version macros (<5.0.0) */
+#define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION * 10000000UL)   | \
+                                   ((rt_uint32_t)RT_SUBVERSION *    10000UL) | \
+                                   ((rt_uint32_t)RT_REVISION *        1UL))
+#define thread_rt_list_entry(node, rt_thread)   rt_list_entry(node, struct rt_thread, list)
+#define THREAD_NAME(thread_cb)  thread_cb->thread.name
+#endif
+
 typedef struct
 {
     rt_uint8_t flags;

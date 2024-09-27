@@ -15,10 +15,6 @@
 #include <os_tick.h>
 #include <rthw.h>
 
-///< RT-Thread Kernel version
-#define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION * 10000000UL)   | \
-                                   ((rt_uint32_t)RT_SUBVERSION *    10000UL) | \
-                                   ((rt_uint32_t)RT_REVISION *        1UL))
 #define KERNEL_Id     "RT-Thread"  ///< Kernel identification string
 
 #define DEFAULT_STACK_SIZE 512
@@ -319,7 +315,7 @@ uint32_t osKernelSuspend (void)
     {
         for (node = info_thread->object_list.next; node != &(info_thread->object_list); node = node->next)
         {
-            thread = rt_list_entry(node, struct rt_thread, list);
+            thread = thread_rt_list_entry(node, rt_thread);
 
             if (thread->thread_timer.parent.flag & RT_TIMER_FLAG_ACTIVATED)
             {
@@ -517,7 +513,7 @@ const char *osThreadGetName(osThreadId_t thread_id)
         return RT_NULL;
     }
 
-    return thread_cb->thread.name;
+    return THREAD_NAME(thread_cb);
 }
 
 /// Return the thread ID of the current running thread.
@@ -864,7 +860,7 @@ uint32_t osThreadEnumerate(osThreadId_t *thread_array, uint32_t array_items)
     rt_enter_critical();
     for (node = info->object_list.next; node != &(info->object_list); node = node->next)
     {
-        thread = rt_list_entry(node, struct rt_thread, list);
+        thread = thread_rt_list_entry(node, rt_thread);
         thread_array[thread_count] = (osThreadId_t)thread;
         thread_count++;
 
