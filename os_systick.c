@@ -23,6 +23,7 @@
  */
 
 #include <rtthread.h>
+#include "cmsis_rtthread.h"
 #include "os_tick.h"
 #include "board.h"
 
