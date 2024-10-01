@@ -27,7 +27,7 @@ extern "C" {
 #define THREAD_NAME(thread_cb)  thread_cb->thread.parent.name
 #define RT_WEAK                 rt_weak
 
-#else   /* legacy version macros (<5.0.0) */
+#else   /* legacy version macros (<5.0.2) */
 #define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION * 10000000UL)   | \
                                    ((rt_uint32_t)RT_SUBVERSION *    10000UL) | \
                                    ((rt_uint32_t)RT_REVISION *        1UL))
