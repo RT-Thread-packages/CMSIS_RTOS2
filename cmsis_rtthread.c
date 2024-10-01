@@ -2130,6 +2130,29 @@ osStatus_t osMessageQueuePut(osMessageQueueId_t mq_id, const void *msg_ptr, uint
 /// \param[out]    msg_prio      pointer to buffer for message priority or NULL.
 /// \param[in]     timeout       \ref CMSIS_RTOS_TimeOutValue or 0 in case of no time-out.
 /// \return status code that indicates the execution status of the function.
+#if defined(RT_VERSION_CHECK) && (RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 0, 1))
+osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout)
+{
+    rt_ssize_t result = 0;
+    mq_cb_t *mq_cb = (mq_cb_t *)mq_id;
+
+    /* Check parameters */
+    if (RT_NULL == mq_cb || (RT_NULL == msg_ptr))
+    {
+        return osErrorParameter;
+    }
+    result = rt_mq_recv(&(mq_cb->mq), msg_ptr, mq_cb->init_msg_size, timeout);
+
+    if (result > 0)
+    {
+        return osOK;
+    }
+    else
+    {
+        return osError;
+    }
+}
+#else   /* legacy version macros (<5.0.1) */
 osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout)
 {
     rt_err_t result;
@@ -2153,6 +2176,7 @@ osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *m
     else
         return osError;
 }
+#endif
 
 /// Get maximum number of messages in a Message Queue.
 /// \param[in]     mq_id         message queue ID obtained by \ref osMessageQueueNew.
