@@ -2058,7 +2058,10 @@ osMessageQueueId_t osMessageQueueNew(uint32_t msg_count, uint32_t msg_size, cons
 
     if ((RT_NULL == attr) || (RT_NULL == attr->mq_mem))
     {
-        mq_size = (msg_size + sizeof(struct rt_messagequeue)) * msg_count;
+        register rt_size_t msg_align_size;
+        /* get correct message size */
+        msg_align_size = RT_ALIGN(msg_size, RT_ALIGN_SIZE);
+        mq_size = (msg_align_size + sizeof(struct rt_mq_message)) * msg_count;
         mq_addr = rt_malloc(mq_size);
 
         if (RT_NULL == mq_addr)
