@@ -20,12 +20,19 @@ extern "C" {
 
 ///< RT-Thread Kernel version
 #if defined(RT_VERSION_CHECK) && (RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 0, 2))
+
 #define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION_MAJOR * 10000000UL)    | \
                                    ((rt_uint32_t)RT_VERSION_MINOR  *    10000UL)    | \
                                    ((rt_uint32_t)RT_VERSION_PATCH  *        1UL))
-#define thread_rt_list_entry(node, rt_thread)   rt_list_entry(node, struct rt_thread, tlist)
+#define thread_rt_list_entry(node, rt_thread)   RT_THREAD_LIST_NODE_ENTRY(node)
 #define THREAD_NAME(thread_cb)  thread_cb->thread.parent.name
 #define RT_WEAK                 rt_weak
+
+#if(RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 2, 0))
+#define CMSIS_RT_SCHED_CTX(thread) RT_SCHED_CTX(&thread)
+#else
+#define CMSIS_RT_SCHED_CTX(thread) (thread)
+#endif  /* RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 2, 0) */
 
 #else   /* legacy version macros (<5.0.2) */
 #define KERNEL_VERSION             (((rt_uint32_t)RT_VERSION * 10000000UL)   | \
@@ -33,7 +40,8 @@ extern "C" {
                                    ((rt_uint32_t)RT_REVISION *        1UL))
 #define thread_rt_list_entry(node, rt_thread)   rt_list_entry(node, struct rt_thread, list)
 #define THREAD_NAME(thread_cb)  thread_cb->thread.name
-#endif
+#define CMSIS_RT_SCHED_CTX(thread) (thread)
+#endif  /* RT_VERSION_CHECK */
 
 typedef struct
 {
