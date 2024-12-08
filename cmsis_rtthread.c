@@ -541,7 +541,7 @@ osThreadState_t osThreadGetState(osThreadId_t thread_id)
         return osThreadError;
     }
 
-    switch (thread_cb->thread.stat)
+    switch (CMSIS_RT_SCHED_CTX(thread_cb->thread).stat)
     {
     case RT_THREAD_INIT:
         state = osThreadInactive;
@@ -716,7 +716,7 @@ osStatus_t osThreadDetach(osThreadId_t thread_id)
     }
     */
 
-    if ((thread_cb->thread.stat & RT_THREAD_STAT_MASK) == RT_THREAD_CLOSE)
+    if ((CMSIS_RT_SCHED_CTX(thread_cb->thread).stat & RT_THREAD_STAT_MASK) == RT_THREAD_CLOSE)
     {
         rt_thread_detach(&(thread_cb->thread));
 
