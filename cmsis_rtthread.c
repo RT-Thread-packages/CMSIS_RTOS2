@@ -785,11 +785,16 @@ osStatus_t osThreadJoin(osThreadId_t thread_id)
 
         if (thread_cb->flags & MALLOC_CB)
             rt_free(thread_cb);
+        return osOK;
+    }
+    else if (-RT_ETIMEOUT == result)
+    {
+        return osErrorTimeout;
     }
     else
+    {
         return osError;
-
-    return osOK;
+    }
 }
 
 /// Terminate execution of current running thread.
@@ -2148,8 +2153,14 @@ osStatus_t osMessageQueuePut(osMessageQueueId_t mq_id, const void *msg_ptr, uint
         return osOK;
     else if (-RT_EFULL == result)
         return osErrorResource;
+    else if (-RT_ETIMEOUT == result)
+    {
+        return osErrorTimeout;
+    }
     else
+    {
         return osError;
+    }
 }
 
 /// Get a Message from a Queue or timeout if Queue is empty.
@@ -2181,10 +2192,14 @@ osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *m
     {
         return osOK;
     }
-    else
+    else if (-RT_ETIMEOUT == result)
     {
-        return osError;
+        if (0U == timeout)
+            return osErrorResource;
+        return osErrorTimeout;
     }
+    else
+        return osError;
 }
 #else   /* legacy version macros (<5.0.1) */
 osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout)
