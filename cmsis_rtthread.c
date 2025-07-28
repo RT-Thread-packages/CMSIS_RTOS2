@@ -1435,6 +1435,11 @@ uint32_t osEventFlagsWait(osEventFlagsId_t ef_id, uint32_t flags, uint32_t optio
         rt_options |= RT_EVENT_FLAG_CLEAR;
     }
 
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
+    }
+
     result = rt_event_recv(&(event_cb->event), flags, (rt_uint8_t)rt_options, timeout, &rt_recv);
 
     if (RT_EOK == result)
@@ -1561,6 +1566,11 @@ osStatus_t osMutexAcquire(osMutexId_t mutex_id, uint32_t timeout)
         return osError;
     }
     rt_exit_critical();
+
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
+    }
 
     result = rt_mutex_take(&(mutex_cb->mutex), timeout);
 
@@ -1711,6 +1721,11 @@ osStatus_t osSemaphoreAcquire(osSemaphoreId_t semaphore_id, uint32_t timeout)
     if (RT_NULL == sem_cb)
     {
         return osErrorParameter;
+    }
+
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
     }
 
     result = rt_sem_take(&(sem_cb->sem), timeout);
@@ -1890,6 +1905,11 @@ void *osMemoryPoolAlloc(osMemoryPoolId_t mp_id, uint32_t timeout)
     if (RT_NULL == mempool_cb)
     {
         return RT_NULL;
+    }
+
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
     }
 
     return rt_mp_alloc(&(mempool_cb->mp), timeout);
@@ -2117,7 +2137,12 @@ osStatus_t osMessageQueuePut(osMessageQueueId_t mq_id, const void *msg_ptr, uint
         return osErrorParameter;
     }
 
-    result = rt_mq_send(&(mq_cb->mq), (void *)msg_ptr, mq_cb->init_msg_size);
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
+    }
+
+    result = rt_mq_send_wait(&(mq_cb->mq), (void *)msg_ptr, mq_cb->init_msg_size, timeout);
 
     if (RT_EOK == result)
         return osOK;
@@ -2144,6 +2169,12 @@ osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *m
     {
         return osErrorParameter;
     }
+
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
+    }
+
     result = rt_mq_recv(&(mq_cb->mq), msg_ptr, mq_cb->init_msg_size, timeout);
 
     if (result > 0)
@@ -2166,6 +2197,12 @@ osStatus_t osMessageQueueGet(osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *m
     {
         return osErrorParameter;
     }
+
+    if(timeout == osWaitForever)
+    {
+        timeout = RT_WAITING_FOREVER;
+    }
+
     result = rt_mq_recv(&(mq_cb->mq), msg_ptr, mq_cb->init_msg_size, timeout);
 
     if (RT_EOK == result)
