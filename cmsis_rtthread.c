@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2025, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,6 +7,7 @@
  * Date           Author       Notes
  * 2018-04-12     misonyo      the first version
  * 2019-04-04     misonyo      fix some bugs
+ * 2025-08-18     wdfk_prog    fix osDelay bug
  */
 
 #include <cmsis_os2.h>
@@ -1079,9 +1080,21 @@ uint32_t osThreadFlagsWait(uint32_t flags, uint32_t options, uint32_t timeout)
 /// \return status code that indicates the execution status of the function.
 osStatus_t osDelay(uint32_t ticks)
 {
-    rt_thread_delay(ticks);
-
-    return osOK;
+    if (rt_interrupt_get_nest() != 0)
+    {
+        return osErrorISR;
+    }
+    else 
+    {
+        if(rt_thread_delay(ticks) != RT_EOK)
+        {
+            return osError;
+        }
+        else
+        {
+            return osOK;
+        }
+    }
 }
 
 /// Wait until specified time.
