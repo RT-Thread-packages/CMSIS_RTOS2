@@ -936,7 +936,7 @@ uint32_t osThreadFlagsSet(osThreadId_t thread_id, uint32_t flags)
                 thread_cb->flag_set &= ~thread_cb->thread.event_set;
 
             /* resume thread, and thread list breaks out */
-            rt_thread_resume(rt_thread_self());
+            rt_thread_resume(&(thread_cb->thread));
             need_schedule = RT_TRUE;
         }
     }
