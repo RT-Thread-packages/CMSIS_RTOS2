@@ -45,10 +45,10 @@ extern "C" {
 
 typedef struct
 {
-    rt_uint8_t flags;
+    rt_uint32_t flags;
     struct rt_thread thread;
     rt_sem_t joinable_sem;    ///< semaphore for joinable thread
-    rt_uint8_t flag_set;      ///< thread flag set
+    rt_uint32_t flag_set;     ///< thread flag set
     rt_uint8_t prio;
 }thread_cb_t;
 
