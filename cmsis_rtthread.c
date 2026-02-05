@@ -1367,7 +1367,7 @@ uint32_t osEventFlagsSet(osEventFlagsId_t ef_id, uint32_t flags)
         return ((uint32_t)osFlagsErrorParameter);
     }
 
-    set_flags = event_cb->event.set |= flags;
+    set_flags = event_cb->event.set | flags;
 
     result = rt_event_send(&(event_cb->event), flags);
 
